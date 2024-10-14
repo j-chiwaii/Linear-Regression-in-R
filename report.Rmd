@@ -1,0 +1,102 @@
+---
+title: "Advertising vs Revenue - SOLRush"
+output:
+  pdf_document: default
+  html_document: default
+date: "2024-10-12"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+### Visualize distribution of advertising cost
+```{r echo=FALSE, warning=FALSE}
+# Main Script: Sales Analysis and Linear Regression
+# This script analyzes the relationship between advertising costs and revenue
+# using linear regression. It includes data preprocessing, visualization,
+# and model creation.
+
+# Load required libraries
+library(readxl)
+library(ggplot2)
+library(imputeTS)
+library(caTools)
+
+# Read and preprocess the dataset
+dataset <- read_xlsx('sales.xlsx')
+dataset <- dataset[2:3]  # Select only columns 2 and 3
+
+# Visualize the distribution of advertising cost and revenue
+ggplot(data = dataset, aes(x = advert_cost)) +
+  geom_density()
+```
+
+### Visualize distribution of  revenue
+```{r echo=FALSE, warning=FALSE}
+ggplot(data = dataset, aes(x = revenue)) +
+  geom_density()
+```
+
+### Simple Linear Regression Results
+```{r echo=FALSE}
+# Impute missing values with mean
+dataset$advert_cost <- na_mean(dataset$advert_cost)
+dataset$revenue <- na_mean(dataset$revenue)
+
+# Split the dataset into training and testing sets
+set.seed(456)
+split <- sample.split(dataset$advert_cost, SplitRatio = 4/5)
+training_set <- subset(dataset, split == TRUE)
+testing_set <- subset(dataset, split == FALSE)
+
+# Create and summarize the linear regression model
+linear_model <- lm(formula = revenue ~ advert_cost, data = training_set)
+summary(linear_model)
+```
+
+## Conclusion
+
+-   Strong correlation between advertising and revenue:Our model shows a remarkably strong relationship between advertising spend and revenue generation. With an R-squared value of 0.9135, we can confidently say that over 91% of the variation in revenue is explained by advertising costs. This is an exceptionally high correlation for a new product, indicating that our marketing efforts are hitting the mark.
+
+-   Significant return on advertising investment: The model suggests that for every dollar spent on advertising, we're generating approximately \$4.42 in revenue (coefficient of 4.4150). This is an impressive return on investment, especially for a new product. It indicates that our advertising strategy is not just effective, but highly efficient in converting spend to sales.
+
+-   Reliable baseline revenue: Even without advertising, the model predicts a baseline revenue of about \$491.50 (intercept value). This suggests our product has inherent appeal or we have effective non-advertising channels driving sales. It's a solid foundation to build upon.
+
+-   Statistical confidence: With p-values well below 0.001 for both the intercept and advertising cost coefficient, we can be extremely confident in these results. They're not just chance findings.
+
+
+### Visualize representation of linear regression model on the training set
+```{r echo=FALSE}
+# Visualize the linear regression model on the training set
+ggplot() +
+  geom_point(aes(x = training_set$advert_cost, y = training_set$revenue), color = 'blue') +
+  geom_line(aes(x = training_set$advert_cost, y = predict(linear_model, newdata = training_set)),
+            color = 'red') +
+  ggtitle('Revenue vs Advertising Cost - Training Set') +
+  xlab('Advertising Cost') +
+  ylab('Revenue') +
+  theme_minimal()
+```
+
+
+# Visualize plot of the linear regression model on the testing set
+```{r echo=FALSE}
+# Visualize the linear regression model on the testing set
+ggplot() +
+  geom_point(aes(x = testing_set$advert_cost, y = testing_set$revenue), color = 'black') +
+  geom_line(aes(x = training_set$advert_cost, y = predict(linear_model, newdata = training_set)),
+            color = 'blue') +
+  ggtitle('Revenue vs Advertising Cost - Test Set') +
+  xlab('Advertising Cost') +
+  ylab('Revenue') +
+  theme_minimal()
+```
+
+## Recommendations
+
+-   Accelerate advertising spend:Given the strong ROI, I recommend significantly increasing our advertising budget. Every dollar we're not spending on ads is potentially \$3.42 in unrealized profit. We should aggressively scale up our most effective advertising channels.
+-   Maintain marketing mix:Whatever blend of advertising channels we're using, it's working exceptionally well. Let's document our current strategy meticulously and use it as a blueprint for future product launches.
+-   Explore economies of scale:With such a strong response to advertising, we should investigate bulk media buys or longer-term advertising contracts. This could potentially lower our per-unit advertising costs and further improve our ROI.
+-   Set ambitious sales targets:The model suggests our product has significant growth potential. Let's set aggressive sales targets and build out the supply chain and distribution networks to support rapid scaling.
