@@ -1,6 +1,6 @@
 # Linear Regression in R: YouTube Tutorial
 
-This repository contains all the files for the **Linear Regression using R** tutorial on YouTube. The dataset used in the video is `sales.xlsx`, and the R code is in `Regression.R`.
+This repository contains all the files for the [Using AI to MASTER Linear Regression - COMPLETE WALKTHROUGH](https://youtu.be/Figyzf1npio) tutorial on YouTube. The dataset used in the video is `sales.xlsx`, and the R code is in `Regression.R`.
 
 ## Getting Started
 
